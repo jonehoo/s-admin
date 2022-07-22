@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <el-menu unique-opened="true" class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#236EF3" :router="true">
+    <el-menu :unique-opened="true" class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#236EF3" :router="true">
       <!-- <el-menu-item @click="collapse">
         <i :class="zhedie_icon"></i>
         <span slot="title">{{zhedie_text}}</span>

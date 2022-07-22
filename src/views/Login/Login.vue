@@ -6,7 +6,8 @@
         <div class="login-tx"> S-ADMIN 基础开发框架</div>
       </div>
       <div style="height:10vh;width: 70%;">
-        <el-input prefix-icon="el-icon-user" class="s-input" placeholder="请输入账号" v-model="userName" clearable></el-input>
+        <el-input prefix-icon="el-icon-user" class="s-input" placeholder="请输入账号" v-model="userName" clearable>
+        </el-input>
       </div>
       <div style="height:10vh;width: 70%;">
         <el-input prefix-icon="el-icon-lock" placeholder="请输入密码" v-model="passWord" show-password></el-input>
@@ -21,23 +22,39 @@
 </template>
 
 <script>
+import { login } from '@/api/user'
 export default {
   data() {
     return {
-      userName: 'admin',
-      passWord: '123456',
+      userName: '',
+      passWord: '',
       logocss: "login animate__animated animate__zoomInUp"
     }
   },
   methods: {
     sigin() {
-      this.logocss = "login animate__animated animate__bounceOut"
-      setTimeout(() => {
-        this.$router.push('/home');
-      }, 500)
+      login({ username: this.userName, password: this.passWord }).then(async res => {
+        // console.log(res.data)
+        if (res.data.code == 200) {
+          this.$message({
+            message: res.data.msg,
+            type: 'success'
+          });
+          localStorage.setItem('accessToken', res.data.token)
+          localStorage.setItem('accessTime', Date.parse(new Date()))
+          this.logocss = "login animate__animated animate__bounceOut"
+          this.$router.push('/home');
+          
+        } else {
+          this.$message.error(res.data.msg);
+        }
 
+      })
     },
   },
+  mounted() {
+
+  }
 
 }
 </script>
@@ -48,7 +65,7 @@ export default {
   width: 100vw;
   background-size: 100% 100%;
   background-color: #304156;
-//   background-image: url("../../assets/background/login-back.gif");
+  //   background-image: url("../../assets/background/login-back.gif");
   line-height: 50px;
   display: flex;
   flex-direction: column;
@@ -56,19 +73,19 @@ export default {
   justify-content: center;
   position: relative;
 }
+
 .logofaw {
   right: 10px;
   top: 10px;
   position: absolute;
 }
+
 .login {
   height: 50vh;
   width: 40vw;
-  background: linear-gradient(
-    114.83deg,
-    rgba(255, 255, 255, 0.5) 0.8%,
-    rgba(3, 17, 30, 0) 101.31%
-  );
+  background: linear-gradient(114.83deg,
+      rgba(255, 255, 255, 0.5) 0.8%,
+      rgba(3, 17, 30, 0) 101.31%);
   filter: drop-shadow(0px 25px 25px rgba(0, 0, 0, 0.15));
   backdrop-filter: blur(40px);
   border-radius: 30px;
@@ -76,6 +93,7 @@ export default {
   flex-direction: column;
   align-items: center;
 }
+
 .login-tx {
   display: flex;
   flex-direction: column;
@@ -88,24 +106,28 @@ export default {
   font-family: "黑体";
   text-shadow: 2px 2px 3px rgb(21, 68, 90);
 }
- ::v-deep .el-input__icon {
-    height: 100%;
-    width: 2vw;
-    font-size: 2.5vh !important;
-    text-align: center;
-    line-height: 7vh;
+
+::v-deep .el-input__icon {
+  height: 100%;
+  width: 2vw;
+  font-size: 2.5vh !important;
+  text-align: center;
+  line-height: 7vh;
 }
- ::v-deep .el-input {
+
+::v-deep .el-input {
   position: relative;
   font-size: 14px;
   display: inline-block;
   width: 100%;
 }
- ::v-deep .el-input__inner:focus {
+
+::v-deep .el-input__inner:focus {
   border-color: #ff4050;
   outline: 0;
 }
- ::v-deep .el-input__inner {
+
+::v-deep .el-input__inner {
   -webkit-appearance: none;
   background-color: #fff;
   border-radius: 8px;
@@ -124,7 +146,7 @@ export default {
 
 }
 
- ::v-deep .el-button {
+::v-deep .el-button {
   display: inline-block;
   line-height: 1;
   white-space: nowrap;
@@ -146,11 +168,13 @@ export default {
   height: 7vh;
   letter-spacing: 2px;
 }
- ::v-deep .el-button--warning {
+
+::v-deep .el-button--warning {
   color: #fff;
   background-color: #20539f;
   border-color: #20539f;
 }
+
 .denglu {
   cursor: pointer;
   font-family: YouSheBiaoTiHei;
